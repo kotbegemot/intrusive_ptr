@@ -78,12 +78,8 @@ namespace std {
             return ptr_;
         }
 
-        reference operator*() const noexcept {
+        reference operator*() const {
             return *ptr_;
-        }
-
-        bool operator!() const noexcept {
-            return ptr_ == nullptr;
         }
 
         explicit operator bool() const noexcept {
@@ -95,12 +91,12 @@ namespace std {
         }
 
         template<class C>
-        intrusive_ptr<C> downcast() const noexcept {
+        intrusive_ptr<C> down_pointer_cast() const noexcept {
             return (ptr_) ? dynamic_cast<C *>(get()) : nullptr;
         }
 
         template<class C>
-        intrusive_ptr<C> upcast() const noexcept {
+        intrusive_ptr<C> up_pointer_cast() const noexcept {
             return (ptr_) ? static_cast<C *>(get()) : nullptr;
         }
 
@@ -181,7 +177,7 @@ namespace std {
 
     template<class T, class U>
     intrusive_ptr<T> static_pointer_cast(intrusive_ptr<U> const &r) noexcept {
-        return r.template upcast<T>();
+        return r.template up_pointer_cast<T>();
     }
 
     template<class T, class U>
@@ -189,7 +185,7 @@ namespace std {
 
     template<class T, class U>
     intrusive_ptr<T> dynamic_pointer_cast(intrusive_ptr<U> const &r) noexcept {
-        return r.template downcast<T>();
+        return r.template down_pointer_cast<T>();
     }
 
     template<typename T>
