@@ -2,7 +2,7 @@
 #define INTRUSIVE_PTR_HPP
 //C++ 11 intrusive_ptr
 //frindle api for boost
-
+#include <memory>
 #include <utility>
 #include "ref_counted.hpp"
 
@@ -31,8 +31,7 @@ namespace std {
 
         template<class Y>
         intrusive_ptr(intrusive_ptr<Y> other) : ptr_(other.detach()) {
-            static_assert(std::is_convertible<Y *, T *>::value,
-                          "Y* is not assignable to T*");
+            static_assert(std::is_convertible<Y *, T *>::value, "Y* is not assignable to T*");
         }
 
         intrusive_ptr &operator=(pointer ptr) noexcept {
@@ -192,5 +191,14 @@ namespace std {
     intrusive_ptr<T> dynamic_pointer_cast(intrusive_ptr<U> const &r) noexcept {
         return r.template downcast<T>();
     }
+
+    template<typename T>
+    struct hash<intrusive_ptr<T>>   {
+        size_t operator()(const intrusive_ptr<T>& ptr) const noexcept {
+            using pointer_t = intrusive_ptr<_Tp> ;
+            return std::hash<typename pointer_t::pointer>()(ptr.get());
+        }
+    };
+
 }
 #endif //INTRUSIVE_PTR_HPP
